@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import DashboardMockup from './DashboardMockup'
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -47,32 +48,16 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Mockup — outside container so it can span full width */}
-      <div style={{ perspective: 1200, width: '100%', padding: '0 24px' }}>
+      {/* Dashboard mockup — full-width, code-rendered */}
+      <div style={{ perspective: 1400, width: '100%', padding: '0 32px', maxWidth: 1280, margin: '0 auto' }}>
         <motion.div
           className="hero-mockup-wrap"
-          initial={{ opacity: 0, rotateX: 8, y: 40 }}
+          initial={{ opacity: 0, rotateX: 6, y: 48 }}
           animate={{ opacity: 1, rotateX: 0, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="hero-mockup-glow" aria-hidden="true" />
-          <div className="hero-mockup-frame">
-            {/* macOS chrome */}
-            <div className="mockup-chrome">
-              <div className="mockup-dot" />
-              <div className="mockup-dot" />
-              <div className="mockup-dot" />
-              <div className="mockup-url">app.propiyoke.co.ke</div>
-            </div>
-            {/* Screenshot */}
-            <img
-              src="/dashboard_mockup.png"
-              alt="PropiyoKE Dashboard — financial overview showing KPI cards for income, utilities, and payouts"
-              className="mockup-img"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
+          <DashboardMockup />
         </motion.div>
       </div>
     </section>
