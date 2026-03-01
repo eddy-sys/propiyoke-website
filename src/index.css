@@ -426,7 +426,7 @@ img, video { max-width: 100%; display: block; }
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.05;
-  margin-bottom: 24px;
+  margin: 0 auto 24px;
   max-width: 860px;
 }
 
@@ -434,7 +434,7 @@ img, video { max-width: 100%; display: block; }
   font-size: clamp(16px, 2vw, 19px);
   color: var(--text-secondary);
   max-width: 560px;
-  margin-bottom: 40px;
+  margin: 0 auto 40px;
   line-height: 1.65;
 }
 
