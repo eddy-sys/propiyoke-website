@@ -112,6 +112,13 @@ p { color: var(--text-secondary); line-height: 1.65; }
 
 a { color: inherit; text-decoration: none; }
 
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--violet-bright);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
 img, video { max-width: 100%; display: block; }
 
 /* ─── Layout Utilities ───────────────────────── */
@@ -219,6 +226,7 @@ img, video { max-width: 100%; display: block; }
   border-radius: 50%;
   filter: blur(120px);
   opacity: 0.6;
+  will-change: transform;
 }
 
 .orb-violet {
@@ -245,14 +253,19 @@ img, video { max-width: 100%; display: block; }
   height: 800px;
   background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
   bottom: -300px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: float-orb 28s ease-in-out infinite 4s;
+  left: calc(50% - 400px);
+  animation: float-orb-bottom 28s ease-in-out infinite 4s;
   filter: blur(140px);
 }
 
 @keyframes float-orb {
   0%, 100% { transform: translateY(0px) translateX(0px); }
+  33%       { transform: translateY(-30px) translateX(15px); }
+  66%       { transform: translateY(15px) translateX(-20px); }
+}
+
+@keyframes float-orb-bottom {
+  0%, 100% { transform: translateY(0px); }
   33%       { transform: translateY(-30px) translateX(15px); }
   66%       { transform: translateY(15px) translateX(-20px); }
 }
@@ -837,13 +850,19 @@ img, video { max-width: 100%; display: block; }
   padding: 33px;
 }
 
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .pricing-card-featured::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: var(--radius-xl);
   padding: 1.5px;
-  background: conic-gradient(from 0deg, #8b5cf6, #22d3ee, #8b5cf6);
+  background: conic-gradient(from var(--border-angle), #8b5cf6, #22d3ee, #8b5cf6);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -851,7 +870,7 @@ img, video { max-width: 100%; display: block; }
 }
 
 @keyframes border-spin {
-  to { filter: hue-rotate(360deg); }
+  to { --border-angle: 360deg; }
 }
 
 .pricing-badge {
@@ -1098,4 +1117,13 @@ img, video { max-width: 100%; display: block; }
 
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
   .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+}
+
+/* ─── Reduced Motion ─────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
