@@ -1,178 +1,181 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { useState, useRef } from 'react'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 
-const SHORT_TERM_TIERS = [
-  {
-    name: "Solo Host",
-    price: "3,500",
-    period: "/ mo",
-    limit: "Up to 3 units",
-    features: ["Booking Calendar", "Guest Messaging", "Task Management", "Payment Tracking", "Basic Reports", "Utility Tracking"],
-    featured: false
-  },
-  {
-    name: "Pro Host",
-    price: "9,500",
-    period: "/ mo",
-    limit: "Up to 10 units",
-    features: ["All Solo Host features", "Channel Syncing (iCal)", "Auto Notifications", "Auto Utility Billing"],
-    featured: false
-  },
-  {
-    name: "Operator",
-    price: "22,000",
-    period: "/ mo",
-    limit: "Up to 30 units",
-    features: ["All Pro Host features", "Advanced Analytics", "Payment Reconciliation", "Multi-Channel Sync", "Priority Support"],
-    featured: true
-  },
-  {
-    name: "Agency",
-    price: "45,000",
-    period: "/ mo",
-    limit: "Unlimited units",
-    features: ["Everything in Operator", "Dedicated Success Manager", "Owner Portal Access", "Custom White-Labeling", "Full API Access"],
-    featured: false
-  }
-];
+type Mode = 'short' | 'long' | 'hybrid'
 
-const LONG_TERM_TIERS = [
-  {
-    name: "Startup",
-    price: "15,000",
-    period: "/ mo",
-    limit: "Up to 10 units",
-    features: ["All Premium Features included", "Lease Tracking & Ledger", "Rent Collection via M-Pesa", "Utility Meter Tracking", "Automated Task Mgmt", "Financial Reports"],
-    featured: false
-  },
-  {
-    name: "Professional",
-    price: "45,000",
-    period: "/ mo",
-    limit: "Up to 50 units",
-    features: ["Everything in Startup", "Higher Unit Limit", "Scale Operations", "Priority Support", "Advanced Analytics"],
-    featured: true
-  },
-  {
-    name: "Enterprise",
-    price: "100,000",
-    period: "/ mo",
-    limit: "Up to 150 units",
-    features: ["Everything in Professional", "White Label Dashboard", "Dedicated Support", "Full API Access", "Custom Integrations"],
-    featured: false
-  }
-];
+interface Plan {
+  name: string
+  price: string
+  units: string
+  features: string[]
+  featured?: boolean
+}
 
-const HYBRID_TIERS = [
-  {
-    name: "Hybrid Portfolio",
-    price: "55,000",
-    period: "/ mo",
-    limit: "Up to 50 units",
-    features: ["Mixed Long/Short Term Support", "iSync Channel Manager", "Auto Notifications", "Advanced Analytics", "Priority Support"],
-    featured: false
-  },
-  {
-    name: "Premium Hybrid",
-    price: "120,000",
-    period: "/ mo",
-    limit: "Up to 200 units",
-    features: ["Everything in Hybrid Portfolio", "Owner Trust Statements", "White Labeling", "Full API Access", "Multi-Channel Sync"],
-    featured: true
-  }
-];
+const plans: Record<Mode, Plan[]> = {
+  short: [
+    {
+      name: 'Solo Host',
+      price: '3,500',
+      units: 'Up to 3 units',
+      features: ['M-Pesa reconciliation', 'Utility tracking', 'Basic reports', 'Email support'],
+    },
+    {
+      name: 'Pro Host',
+      price: '9,500',
+      units: 'Up to 10 units',
+      features: ['Everything in Solo', 'Multi-property dashboard', 'Vendor management', 'Priority support'],
+    },
+    {
+      name: 'Operator',
+      price: '22,000',
+      units: 'Up to 30 units',
+      features: ['Everything in Pro', 'Short-term booking tools', 'Advanced analytics', 'Dedicated onboarding'],
+      featured: true,
+    },
+    {
+      name: 'Agency',
+      price: '45,000',
+      units: 'Unlimited units',
+      features: ['Everything in Operator', 'White-label option', 'API access', 'SLA guarantee'],
+    },
+  ],
+  long: [
+    {
+      name: 'Startup',
+      price: '15,000',
+      units: 'Up to 10 units',
+      features: ['M-Pesa reconciliation', 'Utility tracking', 'Tenant portal', 'Basic reports'],
+    },
+    {
+      name: 'Professional',
+      price: '45,000',
+      units: 'Up to 50 units',
+      features: ['Everything in Startup', 'Automated reminders', 'Vendor management', 'P&L exports'],
+      featured: true,
+    },
+    {
+      name: 'Enterprise',
+      price: '100,000',
+      units: 'Up to 150 units',
+      features: ['Everything in Professional', 'Custom workflows', 'API access', 'Dedicated support'],
+    },
+  ],
+  hybrid: [
+    {
+      name: 'Hybrid Portfolio',
+      price: '55,000',
+      units: 'Up to 50 units',
+      features: ['Short & long-term tools', 'M-Pesa reconciliation', 'Utility tracking', 'Unified reporting'],
+    },
+    {
+      name: 'Premium Hybrid',
+      price: '120,000',
+      units: 'Up to 200 units',
+      features: ['Everything in Hybrid', 'Advanced analytics', 'API access', 'White-label option'],
+      featured: true,
+    },
+  ],
+}
 
-const Pricing = () => {
-  const [mode, setMode] = useState<'short' | 'long' | 'hybrid'>('short');
+const modeLabels: { key: Mode; label: string }[] = [
+  { key: 'short', label: 'Short-Term' },
+  { key: 'long', label: 'Long-Term' },
+  { key: 'hybrid', label: 'Hybrid' },
+]
 
-  const getTiers = () => {
-    switch (mode) {
-      case 'short': return SHORT_TERM_TIERS;
-      case 'long': return LONG_TERM_TIERS;
-      case 'hybrid': return HYBRID_TIERS;
-      default: return SHORT_TERM_TIERS;
-    }
-  };
-
-  const tiers = getTiers();
+export default function Pricing() {
+  const [mode, setMode] = useState<Mode>('short')
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section id="pricing" className="section">
+    <section className="pricing section" id="pricing" ref={ref}>
       <div className="container">
-        <div style={{ textAlign: 'center' }}>
-          <h2 className="section-title">Transparent Pricing</h2>
-          <p className="section-subtitle">
-            Tailored precisely for your operational model. Scale up effortlessly as your property portfolio grows.
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: 8 }}>
+          <span className="section-label">✦ Pricing</span>
+          <h2 className="section-title heading-gradient">
+            Plans for every<br />
+            <span className="gradient-text">portfolio size.</span>
+          </h2>
+          <p className="section-sub" style={{ margin: '0 auto' }}>
+            Choose the model that fits your operation. All plans include
+            M-Pesa integration and utility tracking.
           </p>
         </div>
 
-        <div className="pricing-toggle">
-          <div className="toggle-bg">
-            <button
-              className={`toggle-btn ${mode === 'short' ? 'active' : ''}`}
-              onClick={() => setMode('short')}
-            >
-              Short-Term
-            </button>
-            <button
-              className={`toggle-btn ${mode === 'long' ? 'active' : ''}`}
-              onClick={() => setMode('long')}
-            >
-              Long-Term
-            </button>
-            <button
-              className={`toggle-btn ${mode === 'hybrid' ? 'active' : ''}`}
-              onClick={() => setMode('hybrid')}
-            >
-              Hybrid
-            </button>
+        {/* Mode toggle */}
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className="pricing-toggle" role="tablist" aria-label="Pricing mode">
+            {modeLabels.map(m => (
+              <button
+                key={m.key}
+                role="tab"
+                aria-selected={mode === m.key}
+                className={`pricing-toggle-btn ${mode === m.key ? 'active' : ''}`}
+                onClick={() => setMode(m.key)}
+              >
+                {m.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="pricing-grid">
-          {tiers.map((tier, idx) => (
-            <motion.div
-              key={`${mode}-${idx}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className={`pricing-card ${tier.featured ? 'featured' : ''}`}
-            >
-              {tier.featured && <span className="card-badge">Most Popular</span>}
-              <h3 className="pricing-name">{tier.name}</h3>
-              <div className="pricing-price">
-                <span style={{ fontSize: '1.25rem', verticalAlign: 'top', fontWeight: 500, marginRight: '4px' }}>KES</span> {tier.price}
-              </div>
-              <div className="pricing-limit">{tier.limit}</div>
+        {/* Cards */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={mode}
+            className="pricing-grid"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+          >
+            {plans[mode].map((plan, i) => (
+              <motion.div
+                key={plan.name}
+                className={`pricing-card ${plan.featured ? 'pricing-card-featured' : ''}`}
+                initial={{ opacity: 0, y: 24 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{
+                  duration: 0.45,
+                  delay: i * 0.08,
+                  ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+                }}
+              >
+                {plan.featured && (
+                  <div className="pricing-badge">Most Popular</div>
+                )}
+                <div className="pricing-plan">{plan.name}</div>
+                <div className="pricing-price">
+                  KES {plan.price}<span>/mo</span>
+                </div>
+                <div className="pricing-units">{plan.units}</div>
+                <ul className="pricing-features" aria-label={`${plan.name} features`}>
+                  {plan.features.map(f => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+                <a
+                  href="http://localhost:5173"
+                  className={`btn ${plan.featured ? 'btn-primary' : 'btn-ghost'}`}
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
+                  Get Started
+                </a>
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
 
-              <ul className="pricing-features">
-                {tier.features.map((feature, i) => (
-                  <li key={i} className="pricing-feature">
-                    <Check size={18} /> {feature}
-                  </li>
-                ))}
-              </ul>
-
-              <a href="http://localhost:5173" className={`btn pricing-btn ${tier.featured ? 'btn-primary' : 'btn-secondary'}`}>
-                Get Started
-              </a>
-            </motion.div>
-          ))}
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: '4rem' }}>
-          <p className="section-subtitle" style={{ fontSize: '0.9rem' }}>
-            Managing more than 200+ units?
-            <a href="mailto:sales@propiyoke.co.ke" style={{ color: 'var(--primary)', fontWeight: 600, marginLeft: '5px', textDecoration: 'none' }}>
-              Contact our Enterprise team
-            </a> for a custom quote and 1-on-1 onboarding.
-          </p>
-        </div>
+        {/* Enterprise note */}
+        <p style={{ textAlign: 'center', marginTop: 32, fontSize: 14, color: 'var(--text-tertiary)' }}>
+          Need more than 200 units?{' '}
+          <a href="mailto:sales@propiyoke.co.ke" style={{ color: 'var(--violet-bright)' }}>
+            Contact our sales team →
+          </a>
+        </p>
       </div>
     </section>
-  );
-};
-
-export default Pricing;
+  )
+}
