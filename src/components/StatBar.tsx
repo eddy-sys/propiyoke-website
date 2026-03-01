@@ -9,9 +9,9 @@ interface Stat {
 }
 
 const stats: Stat[] = [
-  { value: 2400, suffix: '+', label: 'Units Managed' },
-  { prefix: 'KES ', value: 2.4, suffix: 'B+', label: 'Rent Processed' },
-  { value: 98, suffix: '%', label: 'Platform Uptime' },
+  { value: 120, suffix: '+', label: 'Units Managed' },
+  { prefix: 'KES ', value: 48, suffix: 'M+ Processed', label: 'Rent & Utilities' },
+  { value: 99, suffix: '%', label: 'Uptime' },
 ]
 
 function CountUp({ value, prefix = '', suffix = '', trigger }: {

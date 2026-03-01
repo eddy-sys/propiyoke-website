@@ -1,7 +1,7 @@
 import { Home, CreditCard, Droplets, BarChart2, FileText, Settings, Bell, TrendingUp } from 'lucide-react'
 
 // ─── Data ────────────────────────────────────────
-const revenue = [320, 380, 290, 420, 460, 485]
+const revenue = [52, 61, 48, 70, 74, 82]
 const months  = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
 const peak    = Math.max(...revenue)
 const W = 260, H = 72
@@ -14,10 +14,10 @@ const line = 'M ' + pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L
 const area = `M 0,${H} L ${pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L ')} L ${W},${H} Z`
 
 const payments = [
-  { unit: 'Unit 4A', tenant: 'J. Mwangi',    amount: 'KES 35,000', status: 'Paid',    dot: '#10b981' },
-  { unit: 'Unit 2B', tenant: 'A. Odhiambo',  amount: 'KES 28,500', status: 'Paid',    dot: '#10b981' },
-  { unit: 'Unit 7C', tenant: 'P. Kamau',     amount: 'KES 14,200', status: 'Pending', dot: '#f59e0b' },
-  { unit: 'Unit 1A', tenant: 'G. Wanjiku',   amount: 'KES 42,000', status: 'Paid',    dot: '#10b981' },
+  { unit: 'Unit 4A', tenant: 'J. Mwangi',    amount: 'KES 18,000', status: 'Paid',    dot: '#10b981' },
+  { unit: 'Unit 2B', tenant: 'A. Odhiambo',  amount: 'KES 15,500', status: 'Paid',    dot: '#10b981' },
+  { unit: 'Unit 7C', tenant: 'P. Kamau',     amount: 'KES 3,200',  status: 'Pending', dot: '#f59e0b' },
+  { unit: 'Unit 1A', tenant: 'G. Wanjiku',   amount: 'KES 22,000', status: 'Paid',    dot: '#10b981' },
 ]
 
 const navItems = [
@@ -158,7 +158,7 @@ export default function DashboardMockup() {
         <div style={s.topbar}>
           <div>
             <div style={{ fontWeight: 700, fontSize: 13, color: '#111827' }}>Financial Overview</div>
-            <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 1 }}>June 2025 · 24 active units</div>
+            <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 1 }}>June 2025 · 8 active units</div>
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <div style={{ padding: '4px 10px', borderRadius: 7, background: '#f3f4f6', fontSize: 11, color: '#6b7280', fontWeight: 500 }}>
@@ -176,9 +176,9 @@ export default function DashboardMockup() {
           {/* KPI cards */}
           <div style={s.kpiGrid}>
             {[
-              { label: 'Total Income',      value: 'KES 485,000', tag: '↑ 12.4%', color: '#7c3aed', bg: 'rgba(139,92,246,0.08)' },
-              { label: 'Pending Utilities', value: 'KES 14,200',  tag: '8 units',  color: '#b45309', bg: 'rgba(245,158,11,0.1)'  },
-              { label: 'Net Payout',        value: 'KES 420,500', tag: '↑ 8.1%',  color: '#047857', bg: 'rgba(16,185,129,0.08)' },
+              { label: 'Total Income',      value: 'KES 82,000', tag: '↑ 10.8%', color: '#7c3aed', bg: 'rgba(139,92,246,0.08)' },
+              { label: 'Pending Utilities', value: 'KES 3,200',  tag: '2 units',  color: '#b45309', bg: 'rgba(245,158,11,0.1)'  },
+              { label: 'Net Payout',        value: 'KES 71,400', tag: '↑ 7.3%',  color: '#047857', bg: 'rgba(16,185,129,0.08)' },
             ].map(({ label, value, tag, color, bg }) => (
               <div key={label} style={s.card}>
                 <div style={s.label}>{label}</div>
