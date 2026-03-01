@@ -47,30 +47,33 @@ export default function Hero() {
         </motion.div>
 
         {/* Mockup */}
-        <motion.div
-          className="hero-mockup-wrap"
-          initial={{ opacity: 0, rotateX: 8, y: 40 }}
-          animate={{ opacity: 1, rotateX: 0, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          style={{ perspective: 1200 }}
-        >
-          <div className="hero-mockup-glow" aria-hidden="true" />
-          <div className="hero-mockup-frame">
-            {/* macOS chrome */}
-            <div className="mockup-chrome">
-              <div className="mockup-dot" />
-              <div className="mockup-dot" />
-              <div className="mockup-dot" />
-              <div className="mockup-url">app.propiyoke.co.ke</div>
+        <div style={{ perspective: 1200 }}>
+          <motion.div
+            className="hero-mockup-wrap"
+            initial={{ opacity: 0, rotateX: 8, y: 40 }}
+            animate={{ opacity: 1, rotateX: 0, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="hero-mockup-glow" aria-hidden="true" />
+            <div className="hero-mockup-frame">
+              {/* macOS chrome */}
+              <div className="mockup-chrome">
+                <div className="mockup-dot" />
+                <div className="mockup-dot" />
+                <div className="mockup-dot" />
+                <div className="mockup-url">app.propiyoke.co.ke</div>
+              </div>
+              {/* Screenshot */}
+              <img
+                src="/dashboard_mockup.png"
+                alt="PropiyoKE Dashboard — financial overview showing KPI cards for income, utilities, and payouts"
+                className="mockup-img"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
-            {/* Screenshot */}
-            <img
-              src="/dashboard_mockup.png"
-              alt="PropiyoKE Dashboard — financial overview showing KPI cards for income, utilities, and payouts"
-              className="mockup-img"
-            />
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   )
