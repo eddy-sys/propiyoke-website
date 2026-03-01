@@ -1,101 +1,136 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { LayoutDashboard, Smartphone, CreditCard, Droplets, BookOpen, UserCheck } from 'lucide-react';
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
+import { CreditCard, Droplets, LayoutDashboard, Smartphone, UserCheck, BookOpen } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
-const Features = () => {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
+interface Feature {
+  icon: LucideIcon
+  title: string
+  desc: string
+  large?: boolean
+}
 
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
+const features: Feature[] = [
+  {
+    icon: CreditCard,
+    title: 'M-Pesa Reconciliation',
+    desc: 'Automated payment processing via Paybill and Till. Every shilling tracked, matched, and reported in real time — no spreadsheets needed.',
+    large: true,
+  },
+  {
+    icon: Droplets,
+    title: 'Utility Meter Tracking',
+    desc: 'Record water and electric readings per unit, auto-calculate bills, and flag outstanding balances.',
+  },
+  {
+    icon: BookOpen,
+    title: 'Dynamic Reports',
+    desc: 'Export P&L statements, bad debt logs, and owner summaries in one click.',
+  },
+  {
+    icon: Smartphone,
+    title: 'Short & Long Term',
+    desc: 'One platform for Airbnb vacation rentals and traditional residential leasing.',
+  },
+  {
+    icon: UserCheck,
+    title: 'Vendor & Tasks',
+    desc: 'Delegate maintenance jobs to trusted vendors and track completion.',
+  },
+  {
+    icon: LayoutDashboard,
+    title: 'Feature Gating',
+    desc: 'Scales from solo hosts with 3 units to agencies managing 300+.',
+  },
+]
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] as const },
+  }),
+}
+
+export default function Features() {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
+  const [large, ...rest] = features
+  const row1Right = rest.slice(0, 2)
+  const row2 = rest.slice(2)
 
   return (
-    <section id="features" className="section">
+    <section className="features section" id="features">
       <div className="container">
-        <div style={{ textAlign: 'center' }}>
-          <h2 className="section-title">Built for Landlords & Hosts</h2>
-          <p className="section-subtitle">
-            A comprehensive suite of tools built explicitly to solve the unique challenges of Kenyan property management, from automated M-Pesa to utility readings.
+        {/* Header */}
+        <div style={{ marginBottom: 56 }}>
+          <span className="section-label">✦ Platform</span>
+          <h2 className="section-title heading-gradient">
+            Everything you need,<br />
+            <span className="gradient-text">nothing you don't.</span>
+          </h2>
+          <p className="section-sub">
+            Purpose-built tools for the Kenyan rental market — from M-Pesa
+            to maintenance tickets.
           </p>
         </div>
 
-        <motion.div 
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="features-grid"
-        >
-          <motion.div variants={item} className="feature-card">
-            <div className="feature-icon border border-[rgba(255,255,255,0.08)]">
-              <CreditCard />
+        {/* Bento grid */}
+        <div className="bento-grid" ref={ref}>
+          {/* Large hero card — M-Pesa */}
+          <motion.div
+            className="bento-card bento-card-large"
+            custom={0}
+            variants={cardVariants}
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
+          >
+            <div className="bento-icon">
+              <large.icon size={22} />
             </div>
-            <h3 className="feature-title">M-Pesa Reconciliation</h3>
-            <p className="feature-desc">
-              Automatically reconcile incoming M-Pesa payments via Paybill or Till. We process the ledger and apply payments exactly where they are owed.
-            </p>
+            <div className="bento-title">{large.title}</div>
+            <p className="bento-desc">{large.desc}</p>
           </motion.div>
 
-          <motion.div variants={item} className="feature-card">
-            <div className="feature-icon border border-[rgba(255,255,255,0.08)]">
-              <Droplets />
-            </div>
-            <h3 className="feature-title">Pending Utilities Engine</h3>
-            <p className="feature-desc">
-              Track water and electric meter readings accurately. Automatically bind utility arrears directly to the tenant's current rent roll snapshot.
-            </p>
-          </motion.div>
+          {/* Right column — 2 stacked */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {row1Right.map((f, i) => (
+              <motion.div
+                key={f.title}
+                className="bento-card"
+                custom={i + 1}
+                variants={cardVariants}
+                initial="hidden"
+                animate={inView ? 'visible' : 'hidden'}
+              >
+                <div className="bento-icon"><f.icon size={20} /></div>
+                <div className="bento-title">{f.title}</div>
+                <p className="bento-desc">{f.desc}</p>
+              </motion.div>
+            ))}
+          </div>
 
-          <motion.div variants={item} className="feature-card">
-            <div className="feature-icon border border-[rgba(255,255,255,0.08)]">
-              <LayoutDashboard />
-            </div>
-            <h3 className="feature-title">Feature Gating</h3>
-            <p className="feature-desc">
-              Auto-detect properties under management and scale pricing tiers exactly to what you need. From solo Airbnb hosts to 300+ unit agencies.
-            </p>
-          </motion.div>
-
-          <motion.div variants={item} className="feature-card">
-            <div className="feature-icon border border-[rgba(255,255,255,0.08)]">
-              <Smartphone />
-            </div>
-            <h3 className="feature-title">Short & Long Term</h3>
-            <p className="feature-desc">
-              Whether handling overnight bookings, 2-year leases, or a hybrid portfolio, PropiyoKE adapts perfectly to your operational tempo.
-            </p>
-          </motion.div>
-
-          <motion.div variants={item} className="feature-card">
-            <div className="feature-icon border border-[rgba(255,255,255,0.08)]">
-              <UserCheck />
-            </div>
-            <h3 className="feature-title">Vendor & Tasks</h3>
-            <p className="feature-desc">
-              Delegate maintenance reliably. Assign vendors to tasks, track status, generate payable receipts, and factor it into the exact monthly reports.
-            </p>
-          </motion.div>
-
-          <motion.div variants={item} className="feature-card">
-            <div className="feature-icon border border-[rgba(255,255,255,0.08)]">
-              <BookOpen />
-            </div>
-            <h3 className="feature-title">Dynamic Reports</h3>
-            <p className="feature-desc">
-              Export precise P&Ls instantly. View expected gross income versus net payout while factoring in bad debt or uncollected rent balances seamlessly.
-            </p>
-          </motion.div>
-        </motion.div>
+          {/* Row 2 — 3-col spanning full width */}
+          <div className="bento-row-2">
+            {row2.map((f, i) => (
+              <motion.div
+                key={f.title}
+                className="bento-card"
+                custom={i + 3}
+                variants={cardVariants}
+                initial="hidden"
+                animate={inView ? 'visible' : 'hidden'}
+              >
+                <div className="bento-icon"><f.icon size={20} /></div>
+                <div className="bento-title">{f.title}</div>
+                <p className="bento-desc">{f.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
-  );
-};
-
-export default Features;
+  )
+}
