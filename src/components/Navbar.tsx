@@ -1,87 +1,112 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Menu, X } from 'lucide-react';
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Home, Menu, X } from 'lucide-react'
 
-const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const links = [
+    { label: 'Features', href: '#features' },
+    { label: 'Platform', href: '#platform' },
+    { label: 'Pricing', href: '#pricing' },
+  ]
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} style={{
-      background: scrolled ? 'rgba(5,5,5,0.85)' : 'transparent',
-      borderBottom: scrolled ? '1px solid var(--border-color)' : '1px solid transparent'
-    }}>
-      <div className="container nav-container">
-        <a href="/" className="nav-logo">
-          <div style={{ background: 'var(--brand-primary)', padding: '6px', borderRadius: '8px', display: 'flex', alignItems: 'center' }}>
-             <Home style={{ color: 'white', width: '20px', height: '20px' }} />
-          </div>
-          Propiyo
-        </a>
-        
-        <div className="nav-links">
-          <a href="#features" className="nav-link">Features</a>
-          <a href="#platform" className="nav-link">Platform</a>
-          <a href="#pricing" className="nav-link">Pricing</a>
-        </div>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }} className="nav-actions-desktop">
-          <a href="http://localhost:5173" className="nav-link">Sign In</a>
-          <a href="http://localhost:5173" className="btn btn-primary">
-            Start Free Trial
+    <>
+      <motion.nav
+        className={`navbar ${scrolled ? 'scrolled' : ''}`}
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="navbar-inner">
+          {/* Logo */}
+          <a href="/" className="navbar-logo">
+            <Home size={20} />
+            PropiyoKE
           </a>
-        </div>
 
-        <button 
-          className="nav-actions-mobile"
-          style={{ background: 'none', border: 'none', color: 'white' }}
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X /> : <Menu />}
-        </button>
-      </div>
+          {/* Desktop links */}
+          <ul className="navbar-links">
+            {links.map(link => (
+              <li key={link.label}>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            style={{ 
-              position: 'absolute', 
-              top: 'var(--nav-height)', 
-              left: 0, 
-              right: 0, 
-              background: '#050505', 
-              borderBottom: '1px solid var(--border-color)', 
-              padding: '1.5rem', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              gap: '1.5rem', 
-              alignItems: 'center' 
-            }}
+          {/* Desktop actions */}
+          <div className="navbar-actions">
+            <a href="http://localhost:5173" className="navbar-signin">Sign In</a>
+            <a href="http://localhost:5173" className="btn btn-primary">Get Started</a>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className="navbar-hamburger"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open menu"
           >
-            <a href="#features" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Features</a>
-            <a href="#platform" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Platform</a>
-            <a href="#pricing" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
-            <a href="http://localhost:5173" className="btn btn-primary" style={{ width: '100%', maxWidth: '200px' }} onClick={() => setMobileMenuOpen(false)}>
-              Login / Sign Up
-            </a>
+            <Menu size={22} />
+          </button>
+        </div>
+      </motion.nav>
+
+      {/* Mobile overlay */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            className="mobile-nav"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <button
+              onClick={() => setMobileOpen(false)}
+              style={{
+                position: 'absolute', top: 24, right: 24,
+                background: 'none', border: 'none',
+                color: 'var(--text-primary)', cursor: 'pointer',
+              }}
+              aria-label="Close menu"
+            >
+              <X size={24} />
+            </button>
+
+            {links.map((link, i) => (
+              <motion.a
+                key={link.label}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {link.label}
+              </motion.a>
+            ))}
+
+            <motion.a
+              href="http://localhost:5173"
+              className="btn btn-primary"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              onClick={() => setMobileOpen(false)}
+            >
+              Get Started
+            </motion.a>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
-  );
-};
-
-export default Navbar;
+    </>
+  )
+}
