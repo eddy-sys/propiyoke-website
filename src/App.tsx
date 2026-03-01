@@ -1,24 +1,37 @@
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import Pricing from './components/Pricing';
-import Footer from './components/Footer';
+import Navbar from './components/Navbar'
+import Hero from './components/Hero'
+import StatBar from './components/StatBar'
+import Features from './components/Features'
+import SocialProof from './components/SocialProof'
+import Pricing from './components/Pricing'
+import CtaBand from './components/CtaBand'
+import Footer from './components/Footer'
+import CursorGlow from './components/CursorGlow'
 
-function App() {
+export default function App() {
   return (
     <>
-      <div className="bg-blobs">
-        <div className="blob blob-1" />
-        <div className="blob blob-2" />
-        <div className="blob blob-3" />
+      {/* Background orbs */}
+      <div className="bg-orbs" aria-hidden="true">
+        <div className="orb orb-violet" />
+        <div className="orb orb-teal" />
+        <div className="orb orb-violet-dim" />
       </div>
+
+      {/* Cursor glow */}
+      <CursorGlow />
+
+      {/* Page */}
       <Navbar />
-      <Hero />
-      <Features />
-      <Pricing />
+      <main>
+        <Hero />
+        <StatBar />
+        <Features />
+        <SocialProof />
+        <Pricing />
+        <CtaBand />
+      </main>
       <Footer />
     </>
-  );
+  )
 }
-
-export default App;
