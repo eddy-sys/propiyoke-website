@@ -444,7 +444,7 @@ img, video { max-width: 100%; display: block; }
   gap: 16px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 72px;
+  margin-bottom: 48px;
 }
 
 .glow-rings {
@@ -494,7 +494,7 @@ img, video { max-width: 100%; display: block; }
 .hero-mockup-wrap {
   position: relative;
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
